@@ -67,6 +67,18 @@ public class PetRock {
 
   }
 
-  public void playWithPetRock
+  public void playWithPetRock(){
+
+  }
+
+  public void polishTheRock(){
+
+  }
+
+  public void updateMood(){
+    
+  }
+
+
   
 }
