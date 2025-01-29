@@ -80,10 +80,10 @@ public class PetRock {
 	}
 
 	public void play() { // Reduces boredom by 3, increases hunger by 1, and costs 2 energy.
-		this.boredom = Math.max(this.boredom - 3, 0); // Ensure boredom doesn't go below 0
-		this.hunger = Math.min(this.hunger + 1, 10); // Ensure hunger doesn't exceed 10
-		this.energy = Math.max(this.energy - 2, 0); // Ensure energy doesn't go below 0
-		updateMood(); // Update mood after playing
+		this.boredom = Math.max(this.boredom - 3, 0); 
+		this.hunger = Math.min(this.hunger + 1, 10); 
+		this.energy = Math.max(this.energy - 2, 0); 
+		updateMood(); 
 	}
 
 	public void polish() { // Reduces hunger and boredom by 1, restores 1 energy, and sets mood to "Happy".
@@ -129,22 +129,22 @@ public class PetRock {
 	}
 
 	public void increaseHungerAndBoredom() { // Increases hunger and boredom by 1 (called after each turn).
-
+		this.hunger = Math.min(this.hunger + 1, 10);
+		this.boredom = Math.min(this.boredom + 1, 10);
 	}
 
 	public void restoreEnergy() { // Restores 1 energy if no action is taken during a turn.
-
+		this.energy = Math.min(this.energy + 1, 10);
 	}
 
 	// Validation methods
 	public boolean isEnergyDepleted() { // Returns true if energy is 0.
-
-		return false;
+		return this.energy == 0;
 	}
 
 	public boolean isHungerOrBoredomMaxed() { // Returns true if hunger or boredom reaches 10.
 
-		return false;
+		return (this.hunger == 10 || this.boredom == 10);
 	}
 
 	// File persistance
