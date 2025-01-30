@@ -111,30 +111,30 @@ public class PetRock {
 
 	// State management
 	public void updateMood() { // Dynamically calculates the mood based on hunger, boredom, and energy levels.
-		if((this.hunger < 4 && this.boredom < 4) && this.energy > 3){
-			this.mood = "Happy";
-		}
-		else if((this.hunger <= 7 || this.boredom <= 7) && this.energy > 3){
+		// Dynamically calculates the mood based on hunger, boredom, and energy levels
+		if (this.energy <= 2) {
+			this.mood = "Tired";
+		} 
+		else if (this.hunger > 7 || this.boredom > 7 || this.energy <= 3) {
+			this.mood = "Sad";
+		} 
+		else if (this.hunger >= 4 || this.boredom >= 4) {
 			this.mood = "Bored";
-		}
-		else if(this.hunger > 7 || this.boredom > 7 || this.energy <= 3){
-			this.mood = "Sad";
-		}
-		else if(this.energy <= 2){
-			this.mood = "Sad";
-		}
-		else{ // Debug
-			this.mood = "Error";
+		} 
+		else {
+			this.mood = "Happy";
 		}
 	}
 
 	public void increaseHungerAndBoredom() { // Increases hunger and boredom by 1 (called after each turn).
 		this.hunger = Math.min(this.hunger + 1, 10);
 		this.boredom = Math.min(this.boredom + 1, 10);
+		updateMood();
 	}
 
 	public void restoreEnergy() { // Restores 1 energy if no action is taken during a turn.
 		this.energy = Math.min(this.energy + 1, 10);
+		updateMood();
 	}
 
 	// Validation methods
@@ -143,8 +143,7 @@ public class PetRock {
 	}
 
 	public boolean isHungerOrBoredomMaxed() { // Returns true if hunger or boredom reaches 10.
-
-		return (this.hunger == 10 || this.boredom == 10);
+		return this.hunger == 10 || this.boredom == 10;
 	}
 
 	// File persistance
