@@ -86,10 +86,10 @@ public class PetRock {
 	}
 
 	public void play() { // Reduces boredom by 3, increases hunger by 1, and costs 2 energy.
-		this.boredom = Math.max(this.boredom - 3, 0); 
-		this.hunger = Math.min(this.hunger + 1, 10); 
-		this.energy = Math.max(this.energy - 2, 0); 
-		updateMood(); 
+		this.boredom = Math.max(this.boredom - 3, 0);
+		this.hunger = Math.min(this.hunger + 1, 10);
+		this.energy = Math.max(this.energy - 2, 0);
+		updateMood();
 	}
 
 	public void polish() { // Reduces hunger and boredom by 1, restores 1 energy, and sets mood to "Happy".
@@ -99,13 +99,11 @@ public class PetRock {
 			this.hunger = Math.max(this.hunger - 1, 0);
 			this.boredom = Math.max(this.boredom - 1, 0);
 			this.energy = Math.min(this.energy + 1, 10);
-		}
-		else if (polishCount < 6){ // Diminishing returns after 3 polishes
+		} else if (polishCount < 6) { // Diminishing returns after 3 polishes
 			this.hunger = Math.max(this.hunger - 0, 0); // No effect on hunger
 			this.boredom = Math.max(this.boredom - 1, 0); // Still restores boredom
 			this.energy = Math.min(this.energy + 1, 10); // Still restores energy
-		}
-		else { // Diminishing returns after 6 polishes
+		} else { // Diminishing returns after 6 polishes
 			this.hunger = Math.max(this.hunger - 0, 0); // No effect on hunger
 			this.boredom = Math.max(this.boredom - 0, 0); // No effect on boredom
 			this.energy = Math.min(this.energy + 1, 10); // Still restores energy
@@ -120,14 +118,11 @@ public class PetRock {
 		// Dynamically calculates the mood based on hunger, boredom, and energy levels
 		if (this.energy <= 2) {
 			this.mood = "Tired";
-		} 
-		else if (this.hunger > 7 || this.boredom > 7 || this.energy <= 3) {
+		} else if (this.hunger > 7 || this.boredom > 7 || this.energy <= 3) {
 			this.mood = "Sad";
-		} 
-		else if (this.hunger >= 4 || this.boredom >= 4) {
+		} else if (this.hunger >= 4 || this.boredom >= 4) {
 			this.mood = "Bored";
-		} 
-		else {
+		} else {
 			this.mood = "Happy";
 		}
 	}
