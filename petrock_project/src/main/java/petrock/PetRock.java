@@ -1,5 +1,11 @@
 package petrock;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import org.json.JSONObject;
+
 public class PetRock {
 	private String name;
 	private String mood;
@@ -148,11 +154,34 @@ public class PetRock {
 
 	// File persistance
 	public void saveState(String filePath) { // Saves the rock's state to a JSON file.
+		JSONObject state = new JSONObject();
+		state.put("name", this.name);
+		state.put("mood", this.mood);
+		state.put("hunger", this.hunger);
+		state.put("boredom", this.boredom);
+		state.put("energy", this.energy);
+
+		try (FileWriter file = new FileWriter(filePath)) {
+			file.write(state.toString());
+			System.out.println("Rock state saved to " + filePath);
+		} catch (IOException e) {
+			System.out.println("Error saving rock state: " + e.getMessage());
+		}
 
 	}
 
 	public void loadState(String filePath) { // Loads the rock's state from a JSON file.
-
+		try {
+			String content = new String(Files.readAllBytes(Paths.get(filePath)));
+			JSONObject state = new JSONObject(content);
+			this.name = state.getString("name");
+			this.mood = state.getString("mood");
+			this.hunger = state.getInt("hunger");
+			this.boredom = state.getInt("boredom");
+			this.energy = state.getInt("energy");
+			System.out.println("Rock state loaded from " + filePath);
+		} catch (IOException e) {
+			System.out.println("Error loading rock state: " + e.getMessage());
+		}
 	}
-
 }
