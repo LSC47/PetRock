@@ -126,7 +126,7 @@ public class Main {
     // File handling
     public PetRock loadRockState() {
         PetRock rock = new PetRock("Pebbles"); // Default name if no file exists
-        rock.loadState("rock.json"); // Load state from JSON file
+        rock.loadState("PetRock.json"); // Load state from JSON file
         return rock;
     }
 
