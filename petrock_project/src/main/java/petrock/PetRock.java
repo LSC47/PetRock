@@ -14,14 +14,20 @@ public class PetRock {
     private int energy;
     private int polishCount; // Tracks how many times the rock has been polished (for diminishing returns)
     private String lastMeal; // Tracks the last meal the rock had
+    // Unit test fix
+    private boolean feedCooldown = false; // Tracks if feeding is on cooldown
+    private boolean playCooldown = false; // Tracks if playing is on cooldown
 
     // Constructors
     public PetRock() {
         this.lastMeal = "None"; // Initialize to "None" when no meal has been given
     }
 
-    public PetRock(String n) {
-        this.name = n;
+    public PetRock(String name) {
+        if (name == null) { // Unit test fix
+            throw new IllegalArgumentException("Name cannot be null");
+        }
+        this.name = name;
         this.mood = "None";
         this.hunger = 0;
         this.boredom = 0;
@@ -90,17 +96,25 @@ public class PetRock {
 
     // Action methods
     public void feed() { // Reduces hunger by 2, increases boredom by 1, and costs 1 energy.
+        if (feedCooldown) {
+            throw new IllegalStateException("You cannot feed the rock again so soon!");
+        }
         this.hunger = Math.max(this.hunger - 2, 0); // Ensure hunger doesn't go below 0
         this.boredom = Math.min(this.boredom + 1, 10); // Ensure boredom doesn't exceed 10
         this.energy = Math.max(this.energy - 1, 0); // Ensure energy doesn't go below 0
         this.lastMeal = "nom nom"; // Update the last meal
+        this.feedCooldown = true; // Put feeding on cooldown
         updateMood(); // Update mood after feeding
     }
 
     public void play() { // Reduces boredom by 3, increases hunger by 1, and costs 2 energy.
+        if (playCooldown) {
+            throw new IllegalStateException("You cannot play with the rock again so soon!");
+        }
         this.boredom = Math.max(this.boredom - 3, 0);
         this.hunger = Math.min(this.hunger + 1, 10);
         this.energy = Math.max(this.energy - 2, 0);
+        this.playCooldown = true; // Put playing on cooldown
         updateMood();
     }
 
@@ -145,6 +159,12 @@ public class PetRock {
     public void restoreEnergy() { // Restores 1 energy if no action is taken during a turn.
         this.energy = Math.min(this.energy + 1, 10);
         updateMood();
+    }
+
+    // Cooldown management
+    public void resetCooldowns() {
+        this.feedCooldown = false;
+        this.playCooldown = false;
     }
 
     // Validation methods

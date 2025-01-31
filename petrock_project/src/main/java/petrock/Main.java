@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 public class Main {
     private RandomEvent randomEvent = new RandomEvent(); // Random event handler
-    private boolean feedOnCooldown = false; // Tracks if feeding is on cooldown
-    private boolean playOnCooldown = false; // Tracks if playing is on cooldown
     private Scanner scanner = new Scanner(System.in); // For user input
 
     public static void main(String[] args) {
@@ -51,8 +49,8 @@ public class Main {
             rock.restoreEnergy();
             rock.updateMood();
 
-            // Apply cooldowns
-            applyCooldowns(rock);
+            // Reset cooldowns
+            rock.resetCooldowns();
 
             // Check for game over conditions
             checkGameOver(rock);
@@ -84,23 +82,21 @@ public class Main {
 
     // Action handling
     public void handleFeed(PetRock rock) {
-        if (feedOnCooldown) {
-            System.out.println("You cannot feed the rock again so soon!");
-            return;
+        try {
+            rock.feed(); // Perform the feed action
+            System.out.println("You fed the rock. Hunger decreased, boredom increased.");
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
         }
-        rock.feed(); // Perform the feed action
-        feedOnCooldown = true; // Put feeding on cooldown
-        System.out.println("You fed the rock. Hunger decreased, boredom increased.");
     }
 
     public void handlePlay(PetRock rock) {
-        if (playOnCooldown) {
-            System.out.println("You cannot play with the rock again so soon!");
-            return;
+        try {
+            rock.play(); // Perform the play action
+            System.out.println("You played with the rock. Boredom decreased, hunger increased.");
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
         }
-        rock.play(); // Perform the play action
-        playOnCooldown = true; // Put playing on cooldown
-        System.out.println("You played with the rock. Boredom decreased, hunger increased.");
     }
 
     public void handlePolish(PetRock rock) {
@@ -115,12 +111,6 @@ public class Main {
         System.out.println("Hunger: " + rock.getHunger());
         System.out.println("Boredom: " + rock.getBoredom());
         System.out.println("Energy: " + rock.getEnergy());
-    }
-
-    // Cooldown management
-    public void applyCooldowns(PetRock rock) {
-        if (feedOnCooldown) feedOnCooldown = false; // Reset feeding cooldown
-        if (playOnCooldown) playOnCooldown = false; // Reset playing cooldown
     }
 
     // File handling
