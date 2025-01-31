@@ -8,17 +8,43 @@
   <name>petrock_project</name>
   <url>http://maven.apache.org</url>
 
+  <properties>
+    <!-- Set the Java version to 1.8 (Java 8) or higher -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
   <dependencies>
+    <!-- JUnit dependency -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.13.2</version> <!-- Updated to JUnit 4 -->
       <scope>test</scope>
+    </dependency>
+
+    <!-- org.json dependency -->
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20250107</version> <!-- Use the latest version -->
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <!-- Maven Compiler Plugin to enforce Java version -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version> <!-- Use the latest version -->
+        <configuration>
+          <source>1.8</source> <!-- Set to Java 8 or higher -->
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+
+      <!-- Maven Jar Plugin to specify the main class -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -26,7 +52,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>petrock.App</mainClass> <!-- Adjust "Main" to your actual main class name -->
+              <mainClass>petrock.Main</mainClass> <!-- Adjust to your main class -->
             </manifest>
           </archive>
         </configuration>
