@@ -49,15 +49,15 @@ class PetRockTest {
         PetRock rock = new PetRock("Rocky");
         rock.play();
         String json = rock.toJson();
-        assertTrue(json.contains(""name":"Rocky""), "JSON should contain the pet rock's name.");
+        assertTrue(json.contains("\"name\":\"Rocky\""), "JSON should contain the pet rock's name.");
     }
 
     @Test
     void testJSONDeserialization() {
-        String json = "{"name":"Rocky","happy":true}";
+        String json = "{\"name\":\"Rocky\",\"mood\":\"Happy\",\"hunger\":0,\"boredom\":0,\"energy\":10,\"lastMeal\":\"None\",\"polishCount\":0}";
         PetRock rock = PetRock.fromJson(json);
         assertEquals("Rocky", rock.getName(), "Deserialized PetRock should have the correct name.");
-        assertTrue(rock.isHappy(), "Deserialized PetRock should be happy.");
+        assertEquals("Happy", rock.getMood(), "Deserialized PetRock should be happy.");
     }
 
     @Test

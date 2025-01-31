@@ -22,7 +22,7 @@ public class PetRock {
 
     public PetRock(String n) {
         this.name = n;
-        this.mood = "Happy";
+        this.mood = "None";
         this.hunger = 0;
         this.boredom = 0;
         this.energy = 10;
@@ -82,6 +82,10 @@ public class PetRock {
 
     public void setPolishCount(int p) {
         this.polishCount = p;
+    }
+
+    public void setLastMeal(String lastMeal) {
+        this.lastMeal = lastMeal;
     }
 
     // Action methods
@@ -154,6 +158,31 @@ public class PetRock {
 
     public boolean isHappy() {
         return this.getMood().equals("Happy");
+    }
+
+    // JSON serialization and deserialization
+    public String toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", this.name);
+        json.put("mood", this.mood);
+        json.put("hunger", this.hunger);
+        json.put("boredom", this.boredom);
+        json.put("energy", this.energy);
+        json.put("lastMeal", this.lastMeal);
+        json.put("polishCount", this.polishCount);
+        return json.toString();
+    }
+
+    public static PetRock fromJson(String jsonString) {
+        JSONObject json = new JSONObject(jsonString);
+        PetRock rock = new PetRock(json.getString("name"));
+        rock.setMood(json.getString("mood"));
+        rock.setHunger(json.getInt("hunger"));
+        rock.setBoredom(json.getInt("boredom"));
+        rock.setEnergy(json.getInt("energy"));
+        rock.setLastMeal(json.getString("lastMeal"));
+        rock.setPolishCount(json.getInt("polishCount"));
+        return rock;
     }
 
     // File persistence
