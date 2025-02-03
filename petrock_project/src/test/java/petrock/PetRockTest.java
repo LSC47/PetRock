@@ -12,16 +12,22 @@ class PetRockTest {
     }
 
     @Test
-    void testHappyInitiallyFalse() {
+    void testInitialStates() {
         PetRock rock = new PetRock("Rocky");
-        assertFalse(rock.isHappy(), "A new PetRock should not be happy.");
+        assertEquals("Neutral", rock.getMood(), "A new PetRock should have a neutral mood.");
+        assertEquals(5, rock.getHunger(), "A new PetRock should start with moderate hunger.");
+        assertEquals(5, rock.getBoredom(), "A new PetRock should start with moderate boredom.");
+        assertEquals(5, rock.getEnergy(), "A new PetRock should start with moderate energy.");
     }
 
     @Test
-    void testPlayMakesRockHappy() {
+    void testPlayAdjustsMoodAndStats() {
         PetRock rock = new PetRock("Rocky");
         rock.play();
-        assertTrue(rock.isHappy(), "After playing, PetRock should be happy.");
+        assertEquals("Happy", rock.getMood(), "After playing, PetRock should be happy.");
+        assertEquals(6, rock.getHunger(), "Playing should increase hunger.");
+        assertEquals(0, rock.getBoredom(), "Playing should reduce boredom.");
+        assertEquals(4, rock.getEnergy(), "Playing should decrease energy.");
     }
 
     @Test
@@ -29,6 +35,15 @@ class PetRockTest {
         PetRock rock = new PetRock("Rocky");
         rock.feed();
         assertEquals("nom nom", rock.getLastMeal(), "Feeding should set last meal.");
+        assertEquals(0, rock.getHunger(), "Feeding should reduce hunger to zero.");
+    }
+
+    @Test
+    void testPolishPetRock() {
+        PetRock rock = new PetRock("Rocky");
+        rock.polish();
+        assertEquals(1, rock.getPolishCount(), "Polishing should increase polish count.");
+        assertEquals("Happy", rock.getMood(), "Polishing should make the PetRock happy.");
     }
 
     @Test
@@ -45,6 +60,7 @@ class PetRockTest {
         rock.play();
         String json = rock.toJson();
         assertTrue(json.contains("\"name\":\"Rocky\""), "JSON should contain the pet rock's name.");
+        assertTrue(json.contains("\"mood\":\"Happy\""), "JSON should reflect the correct mood.");
     }
 
     @Test
@@ -56,9 +72,26 @@ class PetRockTest {
     }
 
     @Test
-    void testRockCannotPlayTwice() {
+    void testRockCannotPlayWithoutEnergy() {
         PetRock rock = new PetRock("Rocky");
         rock.play();
-        assertThrows(IllegalStateException.class, rock::play, "PetRock should not be able to play twice.");
+        rock.play();
+        rock.play();
+        rock.play();
+        rock.play(); // Exhaust energy
+        assertThrows(IllegalStateException.class, rock::play, "PetRock should not be able to play without energy.");
     }
-}
+
+    @Test
+    void testRandomEventAffectsPetRock() {
+        PetRock rock = new PetRock("Rocky");
+        RandomEvent event = new RandomEvent();
+        String result = event.triggerEvent(rock);
+        if (!result.isEmpty()) {
+            assertTrue(result.contains("Rocky"), "Random event message should contain PetRock's name.");
+        }
+        // Test that one of the attributes might have changed
+        assertTrue(rock.getHunger() != 5 || rock.getBoredom() != 5 || rock.getEnergy() != 5,
+                "Random event should affect hunger, boredom, or energy.");
+    }
+} 

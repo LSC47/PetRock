@@ -1,9 +1,5 @@
 package petrock;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import org.json.JSONObject;
 
 public class PetRock {
@@ -14,7 +10,6 @@ public class PetRock {
     private int energy;
     private int polishCount; // Tracks how many times the rock has been polished (for diminishing returns)
     private String lastMeal; // Tracks the last meal the rock had
-    // Unit test fix
     private boolean feedCooldown = false; // Tracks if feeding is on cooldown
     private boolean playCooldown = false; // Tracks if playing is on cooldown
 
@@ -24,7 +19,7 @@ public class PetRock {
     }
 
     public PetRock(String name) {
-        if (name == null) { // Unit test fix
+        if (name == null) {
             throw new IllegalArgumentException("Name cannot be null");
         }
         this.name = name;
@@ -65,29 +60,44 @@ public class PetRock {
         return this.lastMeal;
     }
 
-    // Setters
-    public void setName(String n) {
-        this.name = n;
+    // Setters with validation
+    public void setName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("Name cannot be null");
+        }
+        this.name = name;
     }
 
-    public void setMood(String m) {
-        this.mood = m;
+    public void setMood(String mood) {
+        this.mood = mood;
     }
 
-    public void setHunger(int h) {
-        this.hunger = h;
+    public void setHunger(int hunger) {
+        if (hunger < 0 || hunger > 10) {
+            throw new IllegalArgumentException("Hunger must be between 0 and 10");
+        }
+        this.hunger = hunger;
     }
 
-    public void setBoredom(int b) {
-        this.boredom = b;
+    public void setBoredom(int boredom) {
+        if (boredom < 0 || boredom > 10) {
+            throw new IllegalArgumentException("Boredom must be between 0 and 10");
+        }
+        this.boredom = boredom;
     }
 
-    public void setEnergy(int e) {
-        this.energy = e;
+    public void setEnergy(int energy) {
+        if (energy < 0 || energy > 10) {
+            throw new IllegalArgumentException("Energy must be between 0 and 10");
+        }
+        this.energy = energy;
     }
 
-    public void setPolishCount(int p) {
-        this.polishCount = p;
+    public void setPolishCount(int polishCount) {
+        if (polishCount < 0) {
+            throw new IllegalArgumentException("Polish count cannot be negative");
+        }
+        this.polishCount = polishCount;
     }
 
     public void setLastMeal(String lastMeal) {
@@ -95,7 +105,7 @@ public class PetRock {
     }
 
     // Action methods
-    public void feed() { // Reduces hunger by 2, increases boredom by 1, and costs 1 energy.
+    public void feed() {
         if (feedCooldown) {
             throw new IllegalStateException("You cannot feed the rock again so soon!");
         }
@@ -107,7 +117,7 @@ public class PetRock {
         updateMood(); // Update mood after feeding
     }
 
-    public void play() { // Reduces boredom by 3, increases hunger by 1, and costs 2 energy.
+    public void play() {
         if (playCooldown) {
             throw new IllegalStateException("You cannot play with the rock again so soon!");
         }
@@ -118,7 +128,7 @@ public class PetRock {
         updateMood();
     }
 
-    public void polish() { // Reduces hunger and boredom by 1, restores 1 energy, and sets mood to "Happy".
+    public void polish() {
         if (polishCount < 3) { // Full effect for the first 3 polishes
             this.hunger = Math.max(this.hunger - 1, 0);
             this.boredom = Math.max(this.boredom - 1, 0);
@@ -138,7 +148,7 @@ public class PetRock {
     }
 
     // State management
-    public void updateMood() { // Dynamically calculates the mood based on hunger, boredom, and energy levels.
+    public void updateMood() {
         if (this.energy <= 2) {
             this.mood = "Tired";
         } else if (this.hunger > 7 || this.boredom > 7 || this.energy <= 3) {
@@ -150,13 +160,13 @@ public class PetRock {
         }
     }
 
-    public void increaseHungerAndBoredom() { // Increases hunger and boredom by 1 (called after each turn).
+    public void increaseHungerAndBoredom() {
         this.hunger = Math.min(this.hunger + 1, 10);
         this.boredom = Math.min(this.boredom + 1, 10);
         updateMood();
     }
 
-    public void restoreEnergy() { // Restores 1 energy if no action is taken during a turn.
+    public void restoreEnergy() {
         this.energy = Math.min(this.energy + 1, 10);
         updateMood();
     }
@@ -168,11 +178,11 @@ public class PetRock {
     }
 
     // Validation methods
-    public boolean isEnergyDepleted() { // Returns true if energy is 0.
+    public boolean isEnergyDepleted() {
         return this.energy == 0;
     }
 
-    public boolean isHungerOrBoredomMaxed() { // Returns true if hunger or boredom reaches 10.
+    public boolean isHungerOrBoredomMaxed() {
         return this.hunger == 10 || this.boredom == 10;
     }
 
@@ -180,8 +190,8 @@ public class PetRock {
         return this.getMood().equals("Happy");
     }
 
-    // JSON serialization and deserialization
-    public String toJson() {
+    // JSON serialization (for use by PetRockRepository)
+    public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("name", this.name);
         json.put("mood", this.mood);
@@ -190,11 +200,10 @@ public class PetRock {
         json.put("energy", this.energy);
         json.put("lastMeal", this.lastMeal);
         json.put("polishCount", this.polishCount);
-        return json.toString();
+        return json;
     }
 
-    public static PetRock fromJson(String jsonString) {
-        JSONObject json = new JSONObject(jsonString);
+    public static PetRock fromJson(JSONObject json) {
         PetRock rock = new PetRock(json.getString("name"));
         rock.setMood(json.getString("mood"));
         rock.setHunger(json.getInt("hunger"));
@@ -203,37 +212,5 @@ public class PetRock {
         rock.setLastMeal(json.getString("lastMeal"));
         rock.setPolishCount(json.getInt("polishCount"));
         return rock;
-    }
-
-    // File persistence
-    public void saveState(String filePath) { // Saves the rock's state to a JSON file.
-        JSONObject state = new JSONObject();
-        state.put("name", this.name);
-        state.put("mood", this.mood);
-        state.put("hunger", this.hunger);
-        state.put("boredom", this.boredom);
-        state.put("energy", this.energy);
-
-        try (FileWriter file = new FileWriter(filePath)) {
-            file.write(state.toString());
-            System.out.println("Rock state saved to " + filePath);
-        } catch (IOException e) {
-            System.out.println("Error saving rock state: " + e.getMessage());
-        }
-    }
-
-    public void loadState(String filePath) { // Loads the rock's state from a JSON file.
-        try {
-            String content = new String(Files.readAllBytes(Paths.get(filePath)));
-            JSONObject state = new JSONObject(content);
-            this.name = state.getString("name");
-            this.mood = state.getString("mood");
-            this.hunger = state.getInt("hunger");
-            this.boredom = state.getInt("boredom");
-            this.energy = state.getInt("energy");
-            System.out.println("Rock state loaded from " + filePath);
-        } catch (IOException e) {
-            System.out.println("Error loading rock state: " + e.getMessage());
-        }
     }
 }
