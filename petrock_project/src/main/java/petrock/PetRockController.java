@@ -1,20 +1,19 @@
 package petrock;
 
 public class PetRockController {
-    private PetRock petRock;
+    private PetRockModel rock;
     private PetRockView view;
     private RandomEvent randomEvent;
 
-    public PetRockController(PetRock petRock, PetRockView view, RandomEvent randomEvent) {
-        this.petRock = petRock;
+    public PetRockController(PetRockModel rock, PetRockView view) {
+        this.rock = rock;
         this.view = view;
-        this.randomEvent = randomEvent;
+        this.randomEvent = new RandomEvent();
     }
 
+    // Run the game loop
     public void runGameLoop() {
-        boolean running = true;
-
-        while (running) {
+        while (true) {
             view.displayMenu();
             int choice = view.getUserChoice();
 
@@ -29,51 +28,58 @@ public class PetRockController {
                     handlePolish();
                     break;
                 case 4:
-                    view.showStatus(petRock);
-                    break;
+                    view.displayStatus(rock);
+                    continue; // Skip the rest of the loop and show the menu again
                 case 5:
-                    running = false;
-                    break;
+                    view.displayMessage("Goodbye!");
+                    return; // Exit the game
                 default:
                     view.displayMessage("Invalid choice. Please try again.");
+                    continue; // Skip the rest of the loop and show the menu again
             }
 
-            String eventMessage = randomEvent.triggerEvent(petRock);
-            if (!eventMessage.isEmpty()) {
-                view.displayMessage(eventMessage);
-            }
+            // Trigger a random event after each action
+            randomEvent.triggerEvent(rock);
 
-            checkGameOver();
+            // Update the rock's state for the next turn
+            rock.increaseHungerAndBoredom();
+            rock.restoreEnergy();
+            rock.updateMood();
+
+            // Reset cooldowns
+            rock.resetCooldowns();
+
+            // Check for game over conditions
+            if (rock.isEnergyDepleted() || rock.isHungerOrBoredomMaxed()) {
+                view.displayMessage("Game over! Your rock has rolled away.");
+                break; // End the game loop
+            }
         }
     }
 
-    private void handleFeed() {
+    // Handle the feed action
+    public void handleFeed() {
         try {
-            petRock.feed();
-            view.displayMessage(petRock.getName() + " has been fed.");
+            rock.feed();
+            view.displayMessage("You fed the rock. Hunger decreased, boredom increased.");
         } catch (IllegalStateException e) {
             view.displayMessage(e.getMessage());
         }
     }
 
-    private void handlePlay() {
+    // Handle the play action
+    public void handlePlay() {
         try {
-            petRock.play();
-            view.displayMessage(petRock.getName() + " enjoyed playing!");
+            rock.play();
+            view.displayMessage("You played with the rock. Boredom decreased, hunger increased.");
         } catch (IllegalStateException e) {
             view.displayMessage(e.getMessage());
         }
     }
 
-    private void handlePolish() {
-        petRock.polish();
-        view.displayMessage(petRock.getName() + " is now shiny and polished!");
-    }
-
-    private void checkGameOver() {
-        if (petRock.getHunger() >= 10 || petRock.getEnergy() <= 0) {
-            view.displayMessage(petRock.getName() + " is not feeling well. Game over!");
-            System.exit(0);
-        }
+    // Handle the polish action
+    public void handlePolish() {
+        rock.polish();
+        view.displayMessage("You polished the rock. Hunger and boredom decreased, energy restored.");
     }
 }

@@ -2,11 +2,12 @@ package petrock;
 
 public class Main {
     public static void main(String[] args) {
-        PetRock petRock = new PetRock("Rocky");
+        // Initialize the Model, View, and Controller
+        PetRockModel rock = new PetRockModel("Pebbles");
         PetRockView view = new PetRockView();
-        RandomEvent randomEvent = new RandomEvent();
-        PetRockController controller = new PetRockController(petRock, view, randomEvent);
+        PetRockController controller = new PetRockController(rock, view);
 
+        // Start the game loop
         controller.runGameLoop();
     }
 }
