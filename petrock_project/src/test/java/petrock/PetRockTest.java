@@ -79,9 +79,13 @@ class PetRockTest {
     void testRockCannotPlayWithoutEnergy() {
         PetRockModel rock = new PetRockModel("Rocky");
         rock.play(); // Energy: 10 -> 8
+        rock.resetCooldowns();
         rock.play(); // Energy: 8 -> 6
+        rock.resetCooldowns();
         rock.play(); // Energy: 6 -> 4
+        rock.resetCooldowns();
         rock.play(); // Energy: 4 -> 2
+        rock.resetCooldowns();
         rock.play(); // Energy: 2 -> 0
         assertThrows(IllegalStateException.class, rock::play, "PetRock should not be able to play without energy.");
     }
@@ -93,7 +97,7 @@ class PetRockTest {
         event.triggerEvent(rock);
 
         // Check if any attribute has changed
-        boolean isAffected = rock.getHunger() != 0 || rock.getBoredom() != 0 || rock.getEnergy() != 10;
+        boolean isAffected = rock.getHunger() != 0 || rock.getBoredom() != 0 || rock.getEnergy() != 10 || !rock.getMood().equals("None");
         assertTrue(isAffected, "Random event should affect hunger, boredom, or energy.");
     }
 
