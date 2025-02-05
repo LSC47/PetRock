@@ -2,23 +2,23 @@ package petrock;
 
 import org.json.JSONObject;
 
-public class PetRock {
+public class PetRockModel {
     private String name;
     private String mood;
     private int hunger;
     private int boredom;
     private int energy;
-    private int polishCount; // Tracks how many times the rock has been polished (for diminishing returns)
-    private String lastMeal; // Tracks the last meal the rock had
-    private boolean feedCooldown = false; // Tracks if feeding is on cooldown
-    private boolean playCooldown = false; // Tracks if playing is on cooldown
+    private int polishCount;
+    private String lastMeal;
+    private boolean feedCooldown = false;
+    private boolean playCooldown = false;
 
     // Constructors
-    public PetRock() {
-        this.lastMeal = "None"; // Initialize to "None" when no meal has been given
+    public PetRockModel() {
+        this.lastMeal = "None";
     }
 
-    public PetRock(String name) {
+    public PetRockModel(String name) {
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null");
         }
@@ -28,36 +28,36 @@ public class PetRock {
         this.boredom = 0;
         this.energy = 10;
         this.polishCount = 0;
-        this.lastMeal = "None"; // Initialize to "None" when no meal has been given
+        this.lastMeal = "None";
     }
 
     // Getters
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public String getMood() {
-        return this.mood;
+        return mood;
     }
 
     public int getHunger() {
-        return this.hunger;
+        return hunger;
     }
 
     public int getBoredom() {
-        return this.boredom;
+        return boredom;
     }
 
     public int getEnergy() {
-        return this.energy;
+        return energy;
     }
 
     public int getPolishCount() {
-        return this.polishCount;
+        return polishCount;
     }
 
     public String getLastMeal() {
-        return this.lastMeal;
+        return lastMeal;
     }
 
     // Setters with validation
@@ -109,12 +109,12 @@ public class PetRock {
         if (feedCooldown) {
             throw new IllegalStateException("You cannot feed the rock again so soon!");
         }
-        this.hunger = Math.max(this.hunger - 2, 0); // Ensure hunger doesn't go below 0
-        this.boredom = Math.min(this.boredom + 1, 10); // Ensure boredom doesn't exceed 10
-        this.energy = Math.max(this.energy - 1, 0); // Ensure energy doesn't go below 0
-        this.lastMeal = "nom nom"; // Update the last meal
-        this.feedCooldown = true; // Put feeding on cooldown
-        updateMood(); // Update mood after feeding
+        this.hunger = Math.max(this.hunger - 2, 0);
+        this.boredom = Math.min(this.boredom + 1, 10);
+        this.energy = Math.max(this.energy - 1, 0);
+        this.lastMeal = "nom nom";
+        this.feedCooldown = true;
+        updateMood();
     }
 
     public void play() {
@@ -124,27 +124,27 @@ public class PetRock {
         this.boredom = Math.max(this.boredom - 3, 0);
         this.hunger = Math.min(this.hunger + 1, 10);
         this.energy = Math.max(this.energy - 2, 0);
-        this.playCooldown = true; // Put playing on cooldown
+        this.playCooldown = true;
         updateMood();
     }
 
     public void polish() {
-        if (polishCount < 3) { // Full effect for the first 3 polishes
+        if (polishCount < 3) {
             this.hunger = Math.max(this.hunger - 1, 0);
             this.boredom = Math.max(this.boredom - 1, 0);
             this.energy = Math.min(this.energy + 1, 10);
-        } else if (polishCount < 6) { // Diminishing returns after 3 polishes
-            this.hunger = Math.max(this.hunger - 0, 0); // No effect on hunger
-            this.boredom = Math.max(this.boredom - 1, 0); // Still restores boredom
-            this.energy = Math.min(this.energy + 1, 10); // Still restores energy
-        } else { // Diminishing returns after 6 polishes
-            this.hunger = Math.max(this.hunger - 0, 0); // No effect on hunger
-            this.boredom = Math.max(this.boredom - 0, 0); // No effect on boredom
-            this.energy = Math.min(this.energy + 1, 10); // Still restores energy
+        } else if (polishCount < 6) {
+            this.hunger = Math.max(this.hunger - 0, 0);
+            this.boredom = Math.max(this.boredom - 1, 0);
+            this.energy = Math.min(this.energy + 1, 10);
+        } else {
+            this.hunger = Math.max(this.hunger - 0, 0);
+            this.boredom = Math.max(this.boredom - 0, 0);
+            this.energy = Math.min(this.energy + 1, 10);
         }
-        this.mood = "Happy"; // Always sets mood to "Happy"
-        this.polishCount++; // Increment polish count
-        updateMood(); // Update mood after polishing
+        this.mood = "Happy";
+        this.polishCount++;
+        updateMood();
     }
 
     // State management
@@ -203,8 +203,8 @@ public class PetRock {
         return json;
     }
 
-    public static PetRock fromJson(JSONObject json) {
-        PetRock rock = new PetRock(json.getString("name"));
+    public static PetRockModel fromJson(JSONObject json) {
+        PetRockModel rock = new PetRockModel(json.getString("name"));
         rock.setMood(json.getString("mood"));
         rock.setHunger(json.getInt("hunger"));
         rock.setBoredom(json.getInt("boredom"));
