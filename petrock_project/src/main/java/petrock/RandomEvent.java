@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class RandomEvent {
   private Random random = new Random();
+  public PetRockView view = new PetRockView();
 
   // Trigger a random event
   public boolean triggerEvent(PetRockModel rock) {
@@ -32,21 +33,25 @@ public class RandomEvent {
 
   private void shinyPebbleEvent(PetRockModel rock) {
     rock.setMood("Happy");
+    view.displayShinyPebbleEvent();
     rock.updateMood();
   }
 
   private void extraSleepEvent(PetRockModel rock) {
     rock.setEnergy(Math.min(rock.getEnergy() + 2, 10));
+    view.displayExtraSleepEvent();
     rock.updateMood();
   }
 
   private void suddenNoiseEvent(PetRockModel rock) {
     rock.setBoredom(Math.min(rock.getBoredom() + 2, 10));
+    view.displaySuddenNoiseEvent();
     rock.updateMood();
   }
 
   private void grumpyEvent(PetRockModel rock) {
     rock.setHunger(Math.min(rock.getHunger() + 2, 10));
+    view.displayGrumpyEvent();
     rock.updateMood();
   }
 }

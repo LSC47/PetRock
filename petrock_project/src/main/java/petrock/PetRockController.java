@@ -31,10 +31,10 @@ public class PetRockController {
                     view.displayStatus(rock);
                     continue; // Skip the rest of the loop and show the menu again
                 case 5:
-                    view.displayMessage("Goodbye!");
+                    view.displayQuitGame();
                     return; // Exit the game
                 default:
-                    view.displayMessage("Invalid choice. Please try again.");
+                    view.displayInvalidChoice();
                     continue; // Skip the rest of the loop and show the menu again
             }
 
@@ -51,7 +51,7 @@ public class PetRockController {
 
             // Check for game over conditions
             if (rock.isEnergyDepleted() || rock.isHungerOrBoredomMaxed()) {
-                view.displayMessage("Game over! Your rock has rolled away.");
+                view.displayGameOver();
                 break; // End the game loop
             }
         }
@@ -61,7 +61,7 @@ public class PetRockController {
     public void handleFeed() {
         try {
             rock.feed();
-            view.displayMessage("You fed the rock. Hunger decreased, boredom increased.");
+            view.displayFeed();
         } catch (IllegalStateException e) {
             view.displayMessage(e.getMessage());
         }
@@ -71,7 +71,7 @@ public class PetRockController {
     public void handlePlay() {
         try {
             rock.play();
-            view.displayMessage("You played with the rock. Boredom decreased, hunger increased.");
+            view.displayPlay();
         } catch (IllegalStateException e) {
             view.displayMessage(e.getMessage());
         }
@@ -80,6 +80,6 @@ public class PetRockController {
     // Handle the polish action
     public void handlePolish() {
         rock.polish();
-        view.displayMessage("You polished the rock. Hunger and boredom decreased, energy restored.");
+        view.displayPolish();
     }
 }
