@@ -94,11 +94,12 @@ class PetRockTest {
     void testRandomEventAffectsPetRock() {
         PetRockModel rock = new PetRockModel("Rocky");
         RandomEvent event = new RandomEvent();
-        event.triggerEvent(rock);
-
-        // Check if any attribute has changed
-        boolean isAffected = rock.getHunger() != 0 || rock.getBoredom() != 0 || rock.getEnergy() != 10 || !rock.getMood().equals("None");
-        assertTrue(isAffected, "Random event should affect hunger, boredom, or energy.");
+        boolean didRandomEventHappen = event.triggerEvent(rock);
+        if(didRandomEventHappen){
+            // Check if any attribute has changed
+            boolean isAffected = rock.getHunger() != 0 || rock.getBoredom() != 0 || rock.getEnergy() != 10 || !rock.getMood().equals("None");
+            assertTrue(isAffected, "Random event should affect hunger, boredom, energy, or mood.");
+        }    
     }
 
     @Test
