@@ -9,6 +9,6 @@ public class Main {
 
         // Start the game loop
         controller.runGameLoop();
-        System.out.println();
+        System.out.println("");
     }
 }
