@@ -32,10 +32,6 @@ jobs:
         run: mvn package
         working-directory: ${{ github.workspace }}/petrock_project
       
-      - name: Run Program
-        run: java -jar target/petrock_project-1.0-SNAPSHOT.jar
-        working-directory: ${{ github.workspace }}/petrock_project
-      
       - name: Rebuild if any issues
         run: mvn clean package
         working-directory: ${{ github.workspace }}/petrock_project
