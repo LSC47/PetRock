@@ -1,0 +1,184 @@
+All random events triggered:
+lucaschough@Lucass-MacBook-Pro petrock_project % java -jar target/petrock_project-1.0-SNAPSHOT.jar
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 1
+You fed the rock. Hunger decreased, boredom increased.
+Your rock is grumpy today. Hunger increased!
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 2
+You played with the rock. Boredom decreased, hunger increased.
+Your rock is scared by a sudden noise! Boredom increased!
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 3
+You polished the rock. Hunger and boredom decreased, energy restored.
+Your rock found a shiny pebble! It’s happier now!
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 1
+You fed the rock. Hunger decreased, boredom increased.
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 2
+You played with the rock. Boredom decreased, hunger increased.
+Your rock got some extra sleep! Energy restored!
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 4
+
+--- Rock Status ---
+Name: Pebbles
+Mood: Bored
+Hunger: 6
+Boredom: 3
+Energy: 10
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 5
+Goodbye!
+
+
+Ending game:
+lucaschough@Lucass-MacBook-Pro petrock_project % java -jar target/petrock_project-1.0-SNAPSHOT.jar
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 1
+You fed the rock. Hunger decreased, boredom increased.
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 2
+You played with the rock. Boredom decreased, hunger increased.
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 3
+You polished the rock. Hunger and boredom decreased, energy restored.
+Your rock is grumpy today. Hunger increased!
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 1
+You fed the rock. Hunger decreased, boredom increased.
+Your rock is grumpy today. Hunger increased!
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 2
+You played with the rock. Boredom decreased, hunger increased.
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 3
+You polished the rock. Hunger and boredom decreased, energy restored.
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 1
+You fed the rock. Hunger decreased, boredom increased.
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 2
+You played with the rock. Boredom decreased, hunger increased.
+Your rock found a shiny pebble! It’s happier now!
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 3
+You polished the rock. Hunger and boredom decreased, energy restored.
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 1
+You fed the rock. Hunger decreased, boredom increased.
+Your rock is scared by a sudden noise! Boredom increased!
+
+--- Pet Rock Management ---
+1. Feed the Rock
+2. Play with the Rock
+3. Polish the Rock
+4. Check the Rock's Status
+5. Quit
+Enter your choice: 2
+You played with the rock. Boredom decreased, hunger increased.
+Game over! Your rock has rolled away.
+
