@@ -9,6 +9,7 @@ public class Main {
 
         // Start the game loop
         controller.runGameLoop();
-        Syem.out.pri()ger;
+        System.out.print("");
+        
     }
 }
