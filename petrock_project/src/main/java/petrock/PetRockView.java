@@ -2,8 +2,55 @@ package petrock;
 
 import java.util.Scanner;
 
-public class PetRockView {
+public class PetRockView implements Observer {
     private Scanner scanner = new Scanner(System.in);
+
+    @Override
+    public void update(String event) {
+        switch (event) {
+            case "displayMenu":
+                displayMenu();
+                break;
+            case "displayStatus":
+                displayStatus();
+                break;
+            case "displayFeed":
+                displayFeed();
+                break;
+            case "displayPlay":
+                displayPlay();
+                break;
+            case "displayPolish":
+                displayPolish();
+                break;
+            case "displayQuitGame":
+                displayQuitGame();
+                break;
+            case "displayInvalidChoice":
+                displayInvalidChoice();
+                break;
+            case "displayGameOver":
+                displayGameOver();
+                break;
+            case "displayShinyPebbleEvent":
+                displayShinyPebbleEvent();
+                break;
+            case "displayExtraSleepEvent":
+                displayExtraSleepEvent();
+                break;
+            case "displaySuddenNoiseEvent":
+                displaySuddenNoiseEvent();
+                break;
+            case "displayGrumpyEvent":
+                displayGrumpyEvent();
+                break;
+            default:
+                if (event.startsWith("displayMessage:")) {
+                    displayMessage(event.substring("displayMessage:".length()));
+                }
+                break;
+        }
+    }
 
     // Display the main menu
     public void displayMenu() {
@@ -16,17 +63,17 @@ public class PetRockView {
     }
 
     // Get the user's choice
-    public int getUserChoice() {
+    public String getUserChoice() {
         System.out.print("Enter your choice: ");
         while (!scanner.hasNextInt()) {
             System.out.println("Invalid input. Please enter a number.");
             scanner.next(); // Clear invalid input
         }
-        return scanner.nextInt();
+        return String.valueOf(scanner.nextInt());
     }
 
     // Display the rock's status
-    public void displayStatus(PetRockModel rock) {
+    public void displayStatus() {
         System.out.println("\n--- Rock Status ---");
         System.out.println("Name: " + rock.getName());
         System.out.println("Mood: " + rock.getMood());
@@ -36,48 +83,48 @@ public class PetRockView {
     }
 
     // Display messages
-    public void displayMessage(String message){
+    public void displayMessage(String message) {
         System.out.println(message);
     }
 
-    public void displayGameOver(){
+    public void displayGameOver() {
         System.out.println("Game over! Your rock has rolled away.");
     }
 
-    public void displayQuitGame(){
+    public void displayQuitGame() {
         System.out.println("Goodbye!");
     }
 
-    public void displayInvalidChoice(){
+    public void displayInvalidChoice() {
         System.out.println("Invalid choice. Please try again.");
     }
 
-    public void displayFeed(){
+    public void displayFeed() {
         System.out.println("You fed the rock. Hunger decreased, boredom increased.");
     }
 
-    public void displayPlay(){
+    public void displayPlay() {
         System.out.println("You played with the rock. Boredom decreased, hunger increased.");
     }
 
-    public void displayPolish(){
+    public void displayPolish() {
         System.out.println("You polished the rock. Hunger and boredom decreased, energy restored.");
     }
 
     // Display random event messages
-    public void displayShinyPebbleEvent(){
+    public void displayShinyPebbleEvent() {
         System.out.println("Your rock found a shiny pebble! It’s happier now!");
     }
 
-    public void displayExtraSleepEvent(){
+    public void displayExtraSleepEvent() {
         System.out.println("Your rock got some extra sleep! Energy restored!");
     }
 
-    public void displaySuddenNoiseEvent(){
+    public void displaySuddenNoiseEvent() {
         System.out.println("Your rock is scared by a sudden noise! Boredom increased!");
     }
 
-    public void displayGrumpyEvent(){
+    public void displayGrumpyEvent() {
         System.out.println("Your rock is grumpy today. Hunger increased!");
     }
 }

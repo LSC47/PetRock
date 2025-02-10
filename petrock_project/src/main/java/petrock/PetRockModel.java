@@ -60,6 +60,14 @@ public class PetRockModel {
         return lastMeal;
     }
 
+    public boolean isFeedCooldown() {
+        return feedCooldown;
+    }
+
+    public boolean isPlayCooldown() {
+        return playCooldown;
+    }
+
     // Setters with validation
     public void setName(String name) {
         if (name == null) {
@@ -104,90 +112,12 @@ public class PetRockModel {
         this.lastMeal = lastMeal;
     }
 
-    // Action methods
-    public void feed() {
-        if (feedCooldown) {
-            throw new IllegalStateException("You cannot feed the rock again so soon!");
-        }
-        this.hunger = Math.max(this.hunger - 2, 0);
-        this.boredom = Math.min(this.boredom + 1, 10);
-        this.energy = Math.max(this.energy - 1, 0);
-        this.lastMeal = "nom nom";
-        this.feedCooldown = true;
-        updateMood();
+    public void setFeedCooldown(boolean feedCooldown) {
+        this.feedCooldown = feedCooldown;
     }
 
-    public void play() {
-        if (playCooldown) {
-            throw new IllegalStateException("You cannot play with the rock again so soon!");
-        }
-        this.boredom = Math.max(this.boredom - 3, 0);
-        this.hunger = Math.min(this.hunger + 1, 10);
-        this.energy = Math.max(this.energy - 2, 0);
-        this.playCooldown = true;
-        updateMood();
-    }
-
-    public void polish() {
-        if (polishCount < 3) {
-            this.hunger = Math.max(this.hunger - 1, 0);
-            this.boredom = Math.max(this.boredom - 1, 0);
-            this.energy = Math.min(this.energy + 1, 10);
-        } else if (polishCount < 6) {
-            this.hunger = Math.max(this.hunger - 0, 0);
-            this.boredom = Math.max(this.boredom - 1, 0);
-            this.energy = Math.min(this.energy + 1, 10);
-        } else {
-            this.hunger = Math.max(this.hunger - 0, 0);
-            this.boredom = Math.max(this.boredom - 0, 0);
-            this.energy = Math.min(this.energy + 1, 10);
-        }
-        this.mood = "Happy";
-        this.polishCount++;
-        updateMood();
-    }
-
-    // State management
-    public void updateMood() {
-        if (this.energy <= 2) {
-            this.mood = "Tired";
-        } else if (this.hunger > 7 || this.boredom > 7 || this.energy <= 3) {
-            this.mood = "Sad";
-        } else if (this.hunger >= 4 || this.boredom >= 4) {
-            this.mood = "Bored";
-        } else {
-            this.mood = "Happy";
-        }
-    }
-
-    public void increaseHungerAndBoredom() {
-        this.hunger = Math.min(this.hunger + 1, 10);
-        this.boredom = Math.min(this.boredom + 1, 10);
-        updateMood();
-    }
-
-    public void restoreEnergy() {
-        this.energy = Math.min(this.energy + 1, 10);
-        updateMood();
-    }
-
-    // Cooldown management
-    public void resetCooldowns() {
-        this.feedCooldown = false;
-        this.playCooldown = false;
-    }
-
-    // Validation methods
-    public boolean isEnergyDepleted() {
-        return this.energy == 0;
-    }
-
-    public boolean isHungerOrBoredomMaxed() {
-        return this.hunger == 10 || this.boredom == 10;
-    }
-
-    public boolean isHappy() {
-        return this.getMood().equals("Happy");
+    public void setPlayCooldown(boolean playCooldown) {
+        this.playCooldown = playCooldown;
     }
 
     // JSON serialization (for use by PetRockRepository)
