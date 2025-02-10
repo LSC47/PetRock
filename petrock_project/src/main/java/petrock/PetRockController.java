@@ -94,6 +94,7 @@ public class PetRockController extends Observable {
             rock.setEnergy(Math.min(rock.getEnergy() + 1, 10));
         }
         rock.setPolishCount(rock.getPolishCount() + 1);
+        updateMood(); // Update the mood after polishing
         notifyObservers("displayPolish", rock);
     }
 
@@ -150,7 +151,6 @@ public class PetRockController extends Observable {
             rock.setMood("Happy");
         }
     }
-
     // Increase hunger and boredom
     private void increaseHungerAndBoredom() {
         rock.setHunger(Math.min(rock.getHunger() + 1, 10));

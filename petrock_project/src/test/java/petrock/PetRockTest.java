@@ -47,10 +47,15 @@ public class PetRockTest {
         // Initial polish count is 0
         assertEquals(0, rock.getPolishCount());
 
+        // Set the rock's state to ensure it will be happy after polishing
+        rock.setHunger(0); // Low hunger
+        rock.setBoredom(0); // Low boredom
+        rock.setEnergy(10); // High energy
+
         // Polish the rock
         controller.handlePolish();
         assertEquals(1, rock.getPolishCount());
-        assertEquals("Happy", rock.getMood());
+        assertEquals("Happy", rock.getMood()); // Mood should be "Happy"
     }
 
     @Test
