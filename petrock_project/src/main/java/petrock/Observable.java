@@ -17,9 +17,14 @@ public class Observable {
     }
 
     // Notify all observers
-    public void notifyObservers(String event) {
+    public void notifyObservers(String event, PetRockModel rock) {
         for (Observer observer : observers) {
-            observer.update(event);
+            observer.update(event, rock); // Pass the rock object
         }
+    }
+
+    // Get the list of observers
+    public List<Observer> getObservers() {
+        return observers;
     }
 }

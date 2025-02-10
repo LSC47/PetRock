@@ -13,8 +13,10 @@ public class PetRockController extends Observable {
     // Run the game loop
     public void runGameLoop() {
         while (true) {
-            notifyObservers("displayMenu");
-            int choice = Integer.parseInt(notifyObserversAndGetResponse("getUserChoice"));
+            notifyObservers("displayMenu", rock); // Pass the rock object
+
+            // Get user choice from the observer (PetRockView)
+            int choice = Integer.parseInt(((PetRockView) getObservers().get(0)).getUserChoice());
 
             switch (choice) {
                 case 1:
@@ -27,13 +29,13 @@ public class PetRockController extends Observable {
                     handlePolish();
                     break;
                 case 4:
-                    notifyObservers("displayStatus");
+                    notifyObservers("displayStatus", rock); // Pass the rock object
                     continue; // Skip the rest of the loop and show the menu again
                 case 5:
-                    notifyObservers("displayQuitGame");
+                    notifyObservers("displayQuitGame", rock); // Pass the rock object
                     return; // Exit the game
                 default:
-                    notifyObservers("displayInvalidChoice");
+                    notifyObservers("displayInvalidChoice", rock); // Pass the rock object
                     continue; // Skip the rest of the loop and show the menu again
             }
 
@@ -51,7 +53,7 @@ public class PetRockController extends Observable {
 
             // Check for game over conditions
             if (isEnergyDepleted() || isHungerOrBoredomMaxed()) {
-                notifyObservers("displayGameOver");
+                notifyObservers("displayGameOver", rock); // Pass the rock object
                 break; // End the game loop
             }
         }
@@ -60,7 +62,7 @@ public class PetRockController extends Observable {
     // Handle the feed action
     public void handleFeed() {
         if (rock.isFeedCooldown()) {
-            notifyObservers("displayMessage:You cannot feed the rock again so soon!");
+            notifyObservers("displayMessage:You cannot feed the rock again so soon!", rock);
             return;
         }
         rock.setHunger(Math.max(rock.getHunger() - 2, 0));
@@ -68,20 +70,20 @@ public class PetRockController extends Observable {
         rock.setEnergy(Math.max(rock.getEnergy() - 1, 0));
         rock.setLastMeal("nom nom");
         rock.setFeedCooldown(true);
-        notifyObservers("displayFeed");
+        notifyObservers("displayFeed", rock);
     }
 
     // Handle the play action
     public void handlePlay() {
         if (rock.isPlayCooldown()) {
-            notifyObservers("displayMessage:You cannot play with the rock again so soon!");
+            notifyObservers("displayMessage:You cannot play with the rock again so soon!", rock);
             return;
         }
         rock.setBoredom(Math.max(rock.getBoredom() - 3, 0));
         rock.setHunger(Math.min(rock.getHunger() + 1, 10));
         rock.setEnergy(Math.max(rock.getEnergy() - 2, 0));
         rock.setPlayCooldown(true);
-        notifyObservers("displayPlay");
+        notifyObservers("displayPlay", rock);
     }
 
     // Handle the polish action
@@ -97,7 +99,7 @@ public class PetRockController extends Observable {
             rock.setEnergy(Math.min(rock.getEnergy() + 1, 10));
         }
         rock.setPolishCount(rock.getPolishCount() + 1);
-        notifyObservers("displayPolish");
+        notifyObservers("displayPolish", rock);
     }
 
     // Trigger a random event
@@ -123,22 +125,22 @@ public class PetRockController extends Observable {
 
     private void shinyPebbleEvent() {
         rock.setMood("Happy");
-        notifyObservers("displayShinyPebbleEvent");
+        notifyObservers("displayShinyPebbleEvent", rock);
     }
 
     private void extraSleepEvent() {
         rock.setEnergy(Math.min(rock.getEnergy() + 2, 10));
-        notifyObservers("displayExtraSleepEvent");
+        notifyObservers("displayExtraSleepEvent", rock);
     }
 
     private void suddenNoiseEvent() {
         rock.setBoredom(Math.min(rock.getBoredom() + 2, 10));
-        notifyObservers("displaySuddenNoiseEvent");
+        notifyObservers("displaySuddenNoiseEvent", rock);
     }
 
     private void grumpyEvent() {
         rock.setHunger(Math.min(rock.getHunger() + 2, 10));
-        notifyObservers("displayGrumpyEvent");
+        notifyObservers("displayGrumpyEvent", rock);
     }
 
     // Update the rock's mood

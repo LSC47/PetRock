@@ -6,13 +6,13 @@ public class PetRockView implements Observer {
     private Scanner scanner = new Scanner(System.in);
 
     @Override
-    public void update(String event) {
+    public void update(String event, PetRockModel rock) {
         switch (event) {
             case "displayMenu":
                 displayMenu();
                 break;
             case "displayStatus":
-                displayStatus();
+                displayStatus(rock); // Pass the rock object to displayStatus
                 break;
             case "displayFeed":
                 displayFeed();
@@ -62,7 +62,7 @@ public class PetRockView implements Observer {
         System.out.println("5. Quit");
     }
 
-    // Get the user's choice
+    @Override
     public String getUserChoice() {
         System.out.print("Enter your choice: ");
         while (!scanner.hasNextInt()) {
@@ -73,7 +73,7 @@ public class PetRockView implements Observer {
     }
 
     // Display the rock's status
-    public void displayStatus() {
+    public void displayStatus(PetRockModel rock) {
         System.out.println("\n--- Rock Status ---");
         System.out.println("Name: " + rock.getName());
         System.out.println("Mood: " + rock.getMood());
