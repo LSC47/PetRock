@@ -59,11 +59,20 @@ public class PetRockController extends Observable {
         }
     }
 
-    // Handle the feed action
+    public void handlePlay() {
+        if (rock.isPlayCooldown()) {
+            throw new IllegalStateException("You cannot play with the rock again so soon!");
+        }
+        rock.setBoredom(Math.max(rock.getBoredom() - 3, 0));
+        rock.setHunger(Math.min(rock.getHunger() + 1, 10));
+        rock.setEnergy(Math.max(rock.getEnergy() - 2, 0));
+        rock.setPlayCooldown(true);
+        notifyObservers("displayPlay", rock);
+    }
+    
     public void handleFeed() {
         if (rock.isFeedCooldown()) {
-            notifyObservers("displayMessage:You cannot feed the rock again so soon!", rock);
-            return;
+            throw new IllegalStateException("You cannot feed the rock again so soon!");
         }
         rock.setHunger(Math.max(rock.getHunger() - 2, 0));
         rock.setBoredom(Math.min(rock.getBoredom() + 1, 10));
@@ -72,21 +81,7 @@ public class PetRockController extends Observable {
         rock.setFeedCooldown(true);
         notifyObservers("displayFeed", rock);
     }
-
-    // Handle the play action
-    public void handlePlay() {
-        if (rock.isPlayCooldown()) {
-            notifyObservers("displayMessage:You cannot play with the rock again so soon!", rock);
-            return;
-        }
-        rock.setBoredom(Math.max(rock.getBoredom() - 3, 0));
-        rock.setHunger(Math.min(rock.getHunger() + 1, 10));
-        rock.setEnergy(Math.max(rock.getEnergy() - 2, 0));
-        rock.setPlayCooldown(true);
-        notifyObservers("displayPlay", rock);
-    }
-
-    // Handle the polish action
+    
     public void handlePolish() {
         if (rock.getPolishCount() < 3) {
             rock.setHunger(Math.max(rock.getHunger() - 1, 0));
@@ -103,7 +98,7 @@ public class PetRockController extends Observable {
     }
 
     // Trigger a random event
-    private void triggerRandomEvent() {
+    public void triggerRandomEvent() {
         if (random.nextInt(100) < 50) { // 50% chance
             int eventType = random.nextInt(4); // Randomly select an event type (0-3)
             switch (eventType) {
