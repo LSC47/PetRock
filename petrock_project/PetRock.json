@@ -1,0 +1,11 @@
+{
+  "name": "Pebbles",
+  "mood": "Happy",
+  "hunger": 0,
+  "boredom": 0,
+  "energy": 10,
+  "polishCount": 5,
+  "lastMeal": "nom nom",
+  "feedCooldown": true,
+  "playCooldown": true
+}

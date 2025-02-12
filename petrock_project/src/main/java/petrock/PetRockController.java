@@ -29,35 +29,21 @@ public class PetRockController {
                     break;
                 case 4:
                     view.displayStatus(rock);
-                    continue; // Skip the rest of the loop and show the menu again
+                    continue;
                 case 5:
                     view.displayQuitGame();
-                    return; // Exit the game
+                    rock.saveToFile();  // Save game before exiting
+                    return;
                 default:
                     view.displayInvalidChoice();
-                    continue; // Skip the rest of the loop and show the menu again
+                    continue;
             }
 
-            // Trigger a random event after each action
-            randomEvent.triggerEvent(rock);
-
-            // Update the rock's state for the next turn
-            rock.increaseHungerAndBoredom();
-            rock.restoreEnergy();
-            rock.updateMood();
-
-            // Reset cooldowns
-            rock.resetCooldowns();
-
-            // Check for game over conditions
-            if (rock.isEnergyDepleted() || rock.isHungerOrBoredomMaxed()) {
-                view.displayGameOver();
-                break; // End the game loop
-            }
+            // Update game state
+            rock.saveToFile(); // Save progress after every action
         }
     }
 
-    // Handle the feed action
     public void handleFeed() {
         try {
             rock.feed();
@@ -67,7 +53,6 @@ public class PetRockController {
         }
     }
 
-    // Handle the play action
     public void handlePlay() {
         try {
             rock.play();
@@ -77,7 +62,6 @@ public class PetRockController {
         }
     }
 
-    // Handle the polish action
     public void handlePolish() {
         rock.polish();
         view.displayPolish();
