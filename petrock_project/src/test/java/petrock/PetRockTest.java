@@ -1,13 +1,13 @@
 package petrock;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import org.json.JSONObject;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class PetRockTest {
-    private PetRockModel rock;
+    private PetRockModel rock = new PetRockModel("Rocky");
+    private final Gson gson = new Gson();
     private PetRockController controller;
     private PetRockView view;
 
@@ -105,12 +105,15 @@ public class PetRockTest {
     @Test
     public void testMoodCalculation() {
         // Simulate low energy situation:
-        // Set energy to 2, which should cause updateMood() (via an action) to update the mood.
+        // Set energy to 2, which should cause updateMood() (via an action) to update
+        // the mood.
         rock.setEnergy(2);
         rock.setHunger(0);
         rock.setBoredom(0);
-        // Call an action that triggers updateMood; handlePolish() increases energy by 1 (from 2 to 3)
-        // and then calls updateMood(). With energy == 3, the second condition (energy <= 3) applies, making mood \"Sad\".
+        // Call an action that triggers updateMood; handlePolish() increases energy by 1
+        // (from 2 to 3)
+        // and then calls updateMood(). With energy == 3, the second condition (energy
+        // <= 3) applies, making mood \"Sad\".
         controller.handlePolish();
         assertEquals("Sad", rock.getMood());
     }
@@ -125,11 +128,11 @@ public class PetRockTest {
         rock.setLastMeal("pasta");
         rock.setMood("Bored");
 
-        // Serialize to JSON
-        JSONObject json = rock.toJson();
+        // Serialize to JSON string
+        String json = gson.toJson(rock);
 
-        // Create a new rock from JSON
-        PetRockModel rockFromJson = PetRockModel.fromJson(json);
+        // Deserialize back to object
+        PetRockModel rockFromJson = gson.fromJson(json, PetRockModel.class);
 
         // Verify properties
         assertEquals(rock.getName(), rockFromJson.getName());

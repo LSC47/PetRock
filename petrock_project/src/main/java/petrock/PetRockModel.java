@@ -1,6 +1,9 @@
 package petrock;
 
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class PetRockModel {
     private String name;
@@ -120,27 +123,25 @@ public class PetRockModel {
         this.playCooldown = playCooldown;
     }
 
-    // JSON serialization (for use by PetRockRepository)
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("name", this.name);
-        json.put("mood", this.mood);
-        json.put("hunger", this.hunger);
-        json.put("boredom", this.boredom);
-        json.put("energy", this.energy);
-        json.put("lastMeal", this.lastMeal);
-        json.put("polishCount", this.polishCount);
-        return json;
+    // Method to save the current state to a file using Gson
+    public void saveToFile(String filename) {
+        Gson gson = new Gson();
+        try (FileWriter writer = new FileWriter(filename)) {
+            gson.toJson(this, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static PetRockModel fromJson(JSONObject json) {
-        PetRockModel rock = new PetRockModel(json.getString("name"));
-        rock.setMood(json.getString("mood"));
-        rock.setHunger(json.getInt("hunger"));
-        rock.setBoredom(json.getInt("boredom"));
-        rock.setEnergy(json.getInt("energy"));
-        rock.setLastMeal(json.getString("lastMeal"));
-        rock.setPolishCount(json.getInt("polishCount"));
-        return rock;
+    // Static method to load a PetRockModel from a file using Gson
+    public static PetRockModel loadFromFile(String filename) {
+        Gson gson = new Gson();
+        try (FileReader reader = new FileReader(filename)) {
+            return gson.fromJson(reader, PetRockModel.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
 }

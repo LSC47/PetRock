@@ -63,53 +63,53 @@ public class PetRockController extends Observable {
         if (rock.isPlayCooldown()) {
             throw new IllegalStateException("You cannot play with the rock again so soon!");
         }
-    
+
         // Ensure boredom does not go below 0
         rock.setBoredom(Math.max(rock.getBoredom() - 3, 0));
-    
+
         // Increase hunger by 1, but ensure it does not exceed 10
         rock.setHunger(Math.min(rock.getHunger() + 1, 10));
-    
+
         // Decrease energy by 2, but ensure it does not go below 0
         rock.setEnergy(Math.max(rock.getEnergy() - 2, 0));
-    
+
         // Set play cooldown
         rock.setPlayCooldown(true);
-    
+
         // Update mood
         updateMood();
-    
+
         // Notify observers
         notifyObservers("displayPlay", rock);
     }
-    
+
     public void handleFeed() {
         if (rock.isFeedCooldown()) {
             throw new IllegalStateException("You cannot feed the rock again so soon!");
         }
-    
+
         // Ensure hunger does not go below 0
         rock.setHunger(Math.max(rock.getHunger() - 2, 0));
-    
+
         // Increase boredom by 1, but ensure it does not exceed 10
         rock.setBoredom(Math.min(rock.getBoredom() + 1, 10));
-    
+
         // Decrease energy by 1, but ensure it does not go below 0
         rock.setEnergy(Math.max(rock.getEnergy() - 1, 0));
-    
+
         // Set last meal
         rock.setLastMeal("nom nom");
-    
+
         // Set feed cooldown
         rock.setFeedCooldown(true);
-    
+
         // Update mood
         updateMood();
-    
+
         // Notify observers
         notifyObservers("displayFeed", rock);
     }
-    
+
     public void handlePolish() {
         if (rock.getPolishCount() < 3) {
             rock.setHunger(Math.max(rock.getHunger() - 1, 0));
@@ -179,6 +179,7 @@ public class PetRockController extends Observable {
             rock.setMood("Happy");
         }
     }
+
     // Increase hunger and boredom
     private void increaseHungerAndBoredom() {
         rock.setHunger(Math.min(rock.getHunger() + 1, 10));
