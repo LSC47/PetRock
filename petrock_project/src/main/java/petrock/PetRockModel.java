@@ -1,6 +1,9 @@
 package petrock;
 
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class PetRockModel {
     private String name;
@@ -60,6 +63,14 @@ public class PetRockModel {
         return lastMeal;
     }
 
+    public boolean isFeedCooldown() {
+        return feedCooldown;
+    }
+
+    public boolean isPlayCooldown() {
+        return playCooldown;
+    }
+
     // Setters with validation
     public void setName(String name) {
         if (name == null) {
@@ -104,113 +115,33 @@ public class PetRockModel {
         this.lastMeal = lastMeal;
     }
 
-    // Action methods
-    public void feed() {
-        if (feedCooldown) {
-            throw new IllegalStateException("You cannot feed the rock again so soon!");
-        }
-        this.hunger = Math.max(this.hunger - 2, 0);
-        this.boredom = Math.min(this.boredom + 1, 10);
-        this.energy = Math.max(this.energy - 1, 0);
-        this.lastMeal = "nom nom";
-        this.feedCooldown = true;
-        updateMood();
+    public void setFeedCooldown(boolean feedCooldown) {
+        this.feedCooldown = feedCooldown;
     }
 
-    public void play() {
-        if (playCooldown) {
-            throw new IllegalStateException("You cannot play with the rock again so soon!");
-        }
-        this.boredom = Math.max(this.boredom - 3, 0);
-        this.hunger = Math.min(this.hunger + 1, 10);
-        this.energy = Math.max(this.energy - 2, 0);
-        this.playCooldown = true;
-        updateMood();
+    public void setPlayCooldown(boolean playCooldown) {
+        this.playCooldown = playCooldown;
     }
 
-    public void polish() {
-        if (polishCount < 3) {
-            this.hunger = Math.max(this.hunger - 1, 0);
-            this.boredom = Math.max(this.boredom - 1, 0);
-            this.energy = Math.min(this.energy + 1, 10);
-        } else if (polishCount < 6) {
-            this.hunger = Math.max(this.hunger - 0, 0);
-            this.boredom = Math.max(this.boredom - 1, 0);
-            this.energy = Math.min(this.energy + 1, 10);
-        } else {
-            this.hunger = Math.max(this.hunger - 0, 0);
-            this.boredom = Math.max(this.boredom - 0, 0);
-            this.energy = Math.min(this.energy + 1, 10);
-        }
-        this.mood = "Happy";
-        this.polishCount++;
-        updateMood();
-    }
-
-    // State management
-    public void updateMood() {
-        if (this.energy <= 2) {
-            this.mood = "Tired";
-        } else if (this.hunger > 7 || this.boredom > 7 || this.energy <= 3) {
-            this.mood = "Sad";
-        } else if (this.hunger >= 4 || this.boredom >= 4) {
-            this.mood = "Bored";
-        } else {
-            this.mood = "Happy";
+    // Method to save the current state to a file using Gson
+    public void saveToFile(String filename) {
+        Gson gson = new Gson();
+        try (FileWriter writer = new FileWriter(filename)) {
+            gson.toJson(this, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public void increaseHungerAndBoredom() {
-        this.hunger = Math.min(this.hunger + 1, 10);
-        this.boredom = Math.min(this.boredom + 1, 10);
-        updateMood();
+    // Static method to load a PetRockModel from a file using Gson
+    public static PetRockModel loadFromFile(String filename) {
+        Gson gson = new Gson();
+        try (FileReader reader = new FileReader(filename)) {
+            return gson.fromJson(reader, PetRockModel.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public void restoreEnergy() {
-        this.energy = Math.min(this.energy + 1, 10);
-        updateMood();
-    }
-
-    // Cooldown management
-    public void resetCooldowns() {
-        this.feedCooldown = false;
-        this.playCooldown = false;
-    }
-
-    // Validation methods
-    public boolean isEnergyDepleted() {
-        return this.energy == 0;
-    }
-
-    public boolean isHungerOrBoredomMaxed() {
-        return this.hunger == 10 || this.boredom == 10;
-    }
-
-    public boolean isHappy() {
-        return this.getMood().equals("Happy");
-    }
-
-    // JSON serialization (for use by PetRockRepository)
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("name", this.name);
-        json.put("mood", this.mood);
-        json.put("hunger", this.hunger);
-        json.put("boredom", this.boredom);
-        json.put("energy", this.energy);
-        json.put("lastMeal", this.lastMeal);
-        json.put("polishCount", this.polishCount);
-        return json;
-    }
-
-    public static PetRockModel fromJson(JSONObject json) {
-        PetRockModel rock = new PetRockModel(json.getString("name"));
-        rock.setMood(json.getString("mood"));
-        rock.setHunger(json.getInt("hunger"));
-        rock.setBoredom(json.getInt("boredom"));
-        rock.setEnergy(json.getInt("energy"));
-        rock.setLastMeal(json.getString("lastMeal"));
-        rock.setPolishCount(json.getInt("polishCount"));
-        return rock;
-    }
 }

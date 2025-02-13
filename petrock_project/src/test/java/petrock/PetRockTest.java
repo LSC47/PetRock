@@ -1,141 +1,196 @@
 package petrock;
 
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-class PetRockTest {
+public class PetRockTest {
+    private PetRockModel rock = new PetRockModel("Rocky");
+    private final Gson gson = new Gson();
+    private PetRockController controller;
+    private PetRockView view;
 
-    @Test
-    void testGetName() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        assertEquals("Rocky", rock.getName(), "PetRock name should match.");
+    @BeforeEach
+    public void setUp() {
+        rock = new PetRockModel("TestRock");
+        view = new PetRockView();
+        controller = new PetRockController(rock);
+        controller.addObserver(view); // Add the view as an observer
     }
 
     @Test
-    void testInitialStates() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        assertEquals("None", rock.getMood(), "A new PetRock should have no mood.");
-        assertEquals(0, rock.getHunger(), "A new PetRock should start with no hunger.");
-        assertEquals(0, rock.getBoredom(), "A new PetRock should start with no boredom.");
-        assertEquals(10, rock.getEnergy(), "A new PetRock should start with full energy.");
+    public void testPlay() {
+        rock.setBoredom(0);
+        rock.setHunger(0);
+        rock.setEnergy(10);
+        rock.setPlayCooldown(false);
+
+        controller.handlePlay();
+        assertEquals(0, rock.getBoredom());
+        assertEquals(1, rock.getHunger());
+        assertEquals(8, rock.getEnergy());
+        assertTrue(rock.isPlayCooldown());
+
+        assertThrows(IllegalStateException.class, () -> controller.handlePlay());
+        assertThrows(IllegalStateException.class, () -> controller.handlePlay());
     }
 
     @Test
-    void testPlayAdjustsMoodAndStats() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        rock.play();
-        assertEquals("Happy", rock.getMood(), "After playing, PetRock should be happy.");
-        assertEquals(1, rock.getHunger(), "Playing should increase hunger.");
-        assertEquals(0, rock.getBoredom(), "Playing should reduce boredom.");
-        assertEquals(8, rock.getEnergy(), "Playing should decrease energy.");
+    public void testFeed() {
+        rock.setHunger(0);
+        rock.setFeedCooldown(false);
+
+        controller.handleFeed();
+        assertEquals(0, rock.getHunger());
+        assertTrue(rock.isFeedCooldown());
+
+        rock.setFeedCooldown(false);
+        rock.setHunger(5);
+
+        controller.handleFeed();
+        assertEquals(3, rock.getHunger());
+        assertTrue(rock.isFeedCooldown());
     }
 
     @Test
-    void testFeedPetRock() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        rock.feed();
-        assertEquals("nom nom", rock.getLastMeal(), "Feeding should set last meal.");
-        assertEquals(0, rock.getHunger(), "Feeding should reduce hunger to zero.");
+    public void testPolish() {
+        assertEquals(0, rock.getPolishCount());
+        rock.setHunger(0);
+        rock.setBoredom(0);
+        rock.setEnergy(10);
+
+        controller.handlePolish();
+        assertEquals(1, rock.getPolishCount());
+        assertEquals("Happy", rock.getMood());
     }
 
     @Test
-    void testPolishPetRock() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        rock.polish();
-        assertEquals(1, rock.getPolishCount(), "Polishing should increase polish count.");
-        assertEquals("Happy", rock.getMood(), "Polishing should make the PetRock happy.");
+    public void testPlayCooldown() {
+        controller.handlePlay();
+        assertTrue(rock.isPlayCooldown());
+        assertThrows(IllegalStateException.class, () -> controller.handlePlay());
+
+        rock.setPlayCooldown(false);
+        controller.handlePlay();
+        assertTrue(rock.isPlayCooldown());
     }
 
     @Test
-    void testThrowExceptionIfNameIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new PetRockModel(null);
-        });
-        assertEquals("Name cannot be null", exception.getMessage());
+    public void testFeedCooldown() {
+        controller.handleFeed();
+        assertTrue(rock.isFeedCooldown());
+        assertThrows(IllegalStateException.class, () -> controller.handleFeed());
+
+        rock.setFeedCooldown(false);
+        controller.handleFeed();
+        assertTrue(rock.isFeedCooldown());
     }
 
     @Test
-    void testJSONSerialization() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        rock.play();
-        JSONObject json = rock.toJson();
-        assertTrue(json.has("name"), "JSON should contain the pet rock's name.");
-        assertTrue(json.has("mood"), "JSON should reflect the correct mood.");
-        assertEquals("Rocky", json.getString("name"), "JSON name should match.");
-        assertEquals("Happy", json.getString("mood"), "JSON mood should match.");
+    public void testRandomEvents() {
+        controller.triggerRandomEvent();
+        assertTrue(rock.getHunger() >= 0 && rock.getHunger() <= 10);
+        assertTrue(rock.getBoredom() >= 0 && rock.getBoredom() <= 10);
+        assertTrue(rock.getEnergy() >= 0 && rock.getEnergy() <= 10);
+    }
+
+    // New tests
+
+    @Test
+    public void testRockName() {
+        assertEquals("TestRock", rock.getName());
     }
 
     @Test
-    void testJSONDeserialization() {
-        String json = "{\"name\":\"Rocky\",\"mood\":\"Happy\",\"hunger\":0,\"boredom\":0,\"energy\":10,\"lastMeal\":\"None\",\"polishCount\":0}";
-        JSONObject jsonObject = new JSONObject(json);
-        PetRockModel rock = PetRockModel.fromJson(jsonObject);
-        assertEquals("Rocky", rock.getName(), "Deserialized PetRock should have the correct name.");
-        assertEquals("Happy", rock.getMood(), "Deserialized PetRock should be happy.");
+    public void testMoodCalculation() {
+        // Simulate low energy situation:
+        // Set energy to 2, which should cause updateMood() (via an action) to update
+        // the mood.
+        rock.setEnergy(2);
+        rock.setHunger(0);
+        rock.setBoredom(0);
+        // Call an action that triggers updateMood; handlePolish() increases energy by 1
+        // (from 2 to 3)
+        // and then calls updateMood(). With energy == 3, the second condition (energy
+        // <= 3) applies, making mood \"Sad\".
+        controller.handlePolish();
+        assertEquals("Sad", rock.getMood());
     }
 
     @Test
-    void testRockCannotPlayWithoutEnergy() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        rock.play(); // Energy: 10 -> 8
-        rock.resetCooldowns();
-        rock.play(); // Energy: 8 -> 6
-        rock.resetCooldowns();
-        rock.play(); // Energy: 6 -> 4
-        rock.resetCooldowns();
-        rock.play(); // Energy: 4 -> 2
-        rock.resetCooldowns();
-        rock.play(); // Energy: 2 -> 0
-        assertThrows(IllegalStateException.class, rock::play, "PetRock should not be able to play without energy.");
+    public void testSerialization() {
+        // Set some properties on the rock
+        rock.setHunger(4);
+        rock.setBoredom(5);
+        rock.setEnergy(7);
+        rock.setPolishCount(2);
+        rock.setLastMeal("pasta");
+        rock.setMood("Bored");
+
+        // Serialize to JSON string
+        String json = gson.toJson(rock);
+
+        // Deserialize back to object
+        PetRockModel rockFromJson = gson.fromJson(json, PetRockModel.class);
+
+        // Verify properties
+        assertEquals(rock.getName(), rockFromJson.getName());
+        assertEquals(rock.getMood(), rockFromJson.getMood());
+        assertEquals(rock.getHunger(), rockFromJson.getHunger());
+        assertEquals(rock.getBoredom(), rockFromJson.getBoredom());
+        assertEquals(rock.getEnergy(), rockFromJson.getEnergy());
+        assertEquals(rock.getPolishCount(), rockFromJson.getPolishCount());
+        assertEquals(rock.getLastMeal(), rockFromJson.getLastMeal());
     }
 
     @Test
-    void testRandomEventAffectsPetRock() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        RandomEvent event = new RandomEvent();
-        boolean didRandomEventHappen = event.triggerEvent(rock);
-        if(didRandomEventHappen){
-            // Check if any attribute has changed
-            boolean isAffected = rock.getHunger() != 0 || rock.getBoredom() != 0 || rock.getEnergy() != 10 || !rock.getMood().equals("None");
-            assertTrue(isAffected, "Random event should affect hunger, boredom, energy, or mood.");
-        }    
+    public void testInvalidHunger() {
+        // Test that setting hunger below 0 or above 10 throws an exception
+        assertThrows(IllegalArgumentException.class, () -> rock.setHunger(-1));
+        assertThrows(IllegalArgumentException.class, () -> rock.setHunger(11));
     }
 
     @Test
-    void testViewDisplaysStatus() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        PetRockView view = new PetRockView();
-        view.displayStatus(rock); // Just ensure no exceptions are thrown
+    public void testInvalidEnergy() {
+        // Test that setting energy below 0 or above 10 throws an exception
+        assertThrows(IllegalArgumentException.class, () -> rock.setEnergy(-1));
+        assertThrows(IllegalArgumentException.class, () -> rock.setEnergy(11));
     }
 
     @Test
-    void testControllerHandlesFeed() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        PetRockView view = new PetRockView();
-        PetRockController controller = new PetRockController(rock, view);
+    public void testObserverNotification() {
+        // Create a dummy observer that records events
+        DummyObserver dummy = new DummyObserver();
+        controller.addObserver(dummy);
 
-        controller.handleFeed(); // Ensure no exceptions are thrown
-        assertEquals(0, rock.getHunger(), "Feeding should reduce hunger to zero.");
+        // Reset feed cooldown so we can feed
+        rock.setFeedCooldown(false);
+        rock.setHunger(5);
+
+        // Call handleFeed
+        controller.handleFeed();
+
+        // Verify that the dummy observer received the \"displayFeed\" event
+        assertTrue(dummy.receivedEvent("displayFeed"));
     }
 
-    @Test
-    void testControllerHandlesPlay() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        PetRockView view = new PetRockView();
-        PetRockController controller = new PetRockController(rock, view);
+    // Dummy observer for testing purposes
+    static class DummyObserver implements Observer {
+        private java.util.List<String> events = new java.util.ArrayList<>();
 
-        controller.handlePlay(); // Ensure no exceptions are thrown
-        assertEquals(0, rock.getBoredom(), "Playing should reduce boredom to zero.");
-    }
+        @Override
+        public void update(String event, PetRockModel rock) {
+            events.add(event);
+        }
 
-    @Test
-    void testControllerHandlesPolish() {
-        PetRockModel rock = new PetRockModel("Rocky");
-        PetRockView view = new PetRockView();
-        PetRockController controller = new PetRockController(rock, view);
+        @Override
+        public String getUserChoice() {
+            return "";
+        }
 
-        controller.handlePolish(); // Ensure no exceptions are thrown
-        assertEquals("Happy", rock.getMood(), "Polishing should make the PetRock happy.");
+        public boolean receivedEvent(String event) {
+            return events.contains(event);
+        }
     }
 }
